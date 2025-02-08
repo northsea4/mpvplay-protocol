@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Name=MPV protocol
+Comment=Open mpvplay:// links with MPV.
+Exec=mpvplay-protocol %u
+TryExec=mpvplay-protocol
+Icon=mpvplay
+Terminal=false
+Type=Application
+MimeType=x-scheme-handler/mpvplay;
+NoDisplay=true

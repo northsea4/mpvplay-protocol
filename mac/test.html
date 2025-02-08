@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MPV Protocol Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-link { display: block; margin: 10px 0; padding: 10px; background: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <h1>MPV Protocol Test Links</h1>
+    
+    <h2>1. 标准格式测试</h2>
+    <a class="test-link" href="mpvplay://http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">
+        标准格式: mpvplay://http://...
+    </a>
+
+    <h2>2. Chrome 130+ 格式测试（会自动修复）</h2>
+    <a class="test-link" href="mpvplay://http//commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">
+        Chrome 130+ 格式: mpvplay://http//...
+    </a>
+
+    <h2>3. Weblink格式测试</h2>
+    <a class="test-link" href="mpvplay://weblink?url=http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">
+        Weblink格式: mpvplay://weblink?url=http://...
+    </a>
+
+    <h2>4. Weblink格式测试（URL编码）</h2>
+    <a class="test-link" href="mpvplay://weblink?url=http%3A%2F%2Fcommondatastorage.googleapis.com%2Fgtv-videos-bucket%2Fsample%2FBigBuckBunny.mp4">
+        Weblink格式: mpvplay://weblink?url=http%3A%2F%2F...（URL编码）
+    </a>
+
+    <h2>5. 带空格的URL测试</h2>
+    <a class="test-link" href="mpvplay://http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Big%20Buck%20Bunny.mp4">
+        带空格的URL: mpvplay://http://...with spaces...
+    </a>
+
+    <p><small>使用的测试视频是Big Buck Bunny，这是一个开源的测试视频。</small></p>
+</body>
+</html>

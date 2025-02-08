@@ -1,0 +1,50 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: macos-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up mingw-w64
+        run: |
+          brew install mingw-w64
+          
+      - name: Build all packages
+        run: |
+          chmod +x scripts/build-all.sh
+          ./scripts/build-all.sh
+          
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.REPO_GITHUB_TOKEN }}
+          files: |
+            dist/mpvplay-protocol-windows-exe.zip
+            dist/mpvplay-protocol-macos-universal.zip
+            dist/mpvplay-protocol-windows-powershell.zip
+            dist/mpvplay-protocol-windows-bat.zip
+            dist/mpvplay-protocol-linux.zip
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          name: Release ${{ github.ref_name }}
+          body: |
+            ## MPV Protocol Handler ${{ github.ref_name }}
+            
+            ### Downloads
+            - Windows EXE version: [mpvplay-protocol-windows-exe.zip](mpvplay-protocol-windows-exe.zip)
+            - Windows PowerShell version: [mpvplay-protocol-windows-powershell.zip](mpvplay-protocol-windows-powershell.zip)
+            - Windows Batch version: [mpvplay-protocol-windows-bat.zip](mpvplay-protocol-windows-bat.zip)
+            - macOS version: [mpvplay-protocol-macos-universal.zip](mpvplay-protocol-macos-universal.zip)
+            - Linux version: [mpvplay-protocol-linux.zip](mpvplay-protocol-linux.zip)
+            
+            ### Installation
+            Please refer to the README.md in each package for installation instructions.

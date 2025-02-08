@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Get the input URL
+url="$1"
+echo "Input URL: $url"
+
+# Remove mpvplay:// prefix
+url="${url#mpvplay://}"
+echo "After removing prefix: $url"
+
+# Fix Chrome 130+ format
+if [[ "$url" =~ ^http// ]]; then
+    echo "Fixing Chrome 130+ format"
+    url="${url/http//http://}"
+    url="${url/https//https://}"
+    echo "After fixing: $url"
+fi
+
+# Ensure spaces are encoded
+url="${url// /%20}"
+echo "Final URL: $url"
+
+# Check protocol
+if [[ ! $url =~ ^https?:// ]]; then
+  echo "protocol not allowed"
+  exit 1
+fi
+
+# Launch MPV
+echo "Launching MPV..."
+mpvplay "$url" >/dev/null 2>&1 &
+
+# Small delay to ensure MPV starts properly
+# sleep 0.2
