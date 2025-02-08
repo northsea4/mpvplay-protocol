@@ -66,10 +66,10 @@ try {
     
     # Start MPV with no window
     Write-Host "Starting MPV..."
-    Write-Host "Command line: '$mpvPath' --open '$processedUrl'"
+    Write-Host "Command line: '$mpvPath' '$processedUrl'"
     $startInfo = New-Object System.Diagnostics.ProcessStartInfo
     $startInfo.FileName = $mpvPath
-    $startInfo.Arguments = "--open `"$processedUrl`""
+    $startInfo.Arguments = "$processedUrl"
     $startInfo.CreateNoWindow = $true
     $startInfo.UseShellExecute = $false
     $process = [System.Diagnostics.Process]::Start($startInfo)

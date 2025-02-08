@@ -23,8 +23,43 @@
     [alert runModal];
 }
 
+- (NSString *)getMPVPath {
+    // 设置完整的 PATH 环境变量
+    NSTask *task = [[NSTask alloc] init];
+    [task setLaunchPath:@"/usr/bin/which"];
+    [task setArguments:@[@"mpv"]];
+    
+    // 设置环境变量
+    NSMutableDictionary *env = [NSMutableDictionary dictionaryWithDictionary:[[NSProcessInfo processInfo] environment]];
+    [env setObject:@"/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin" forKey:@"PATH"];
+    [task setEnvironment:env];
+
+    // 创建一个管道来捕获命令的输出
+    NSPipe *pipe = [NSPipe pipe];
+    [task setStandardOutput:pipe];
+    [task setStandardError:[NSPipe pipe]]; // 忽略错误输出
+
+    // 启动任务并等待完成
+    [task launch];
+    [task waitUntilExit];
+
+    // 读取命令的输出
+    NSData *outputData = [[pipe fileHandleForReading] readDataToEndOfFile];
+    NSString *outputString = [[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding];
+
+    // 去除输出中的换行符
+    NSString *mpvPath = [outputString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+    // 如果路径不为空，返回路径；否则返回 nil
+    return [mpvPath length] > 0 ? mpvPath : nil;
+}
+
 - (BOOL)isMPVInstalled {
-    return [[NSFileManager defaultManager] fileExistsAtPath:@"/Applications/MPV.app"];
+    // 调用 getMPVPath 方法获取 mpv 路径
+    NSString *mpvPath = [self getMPVPath];
+
+    // 如果路径存在，则说明 mpv 已安装
+    return mpvPath != nil;
 }
 
 - (NSString *)decodeURL:(NSString *)url {
@@ -39,7 +74,7 @@
     NSString *message = [[NSString alloc] initWithFormat:format arguments:args];
     va_end(args);
     
-    fprintf(stderr, "[MPV-Protocol] %s\n", [message UTF8String]);
+    fprintf(stderr, "[mpvplay-protocol] %s\n", [message UTF8String]);
 }
 
 - (NSString *)repairBrokenUrl:(NSString *)url {
@@ -67,7 +102,7 @@
     
     // Check if MPV is installed
     if (![self isMPVInstalled]) {
-        [self showError:@"MPV is not installed in /Applications. Please install MPV media player first."];
+        [self showError:@"MPV is not installed! Please install MPV player and ensure it's in your PATH."];
         return;
     }
     
@@ -91,9 +126,9 @@
             return;
         }
     } else if ([input hasPrefix:@"mpvplay://"]) {
-        url = [input substringFromIndex:6];
+        url = [input substringFromIndex:10];
     } else if ([input hasPrefix:@"mpvplay:"]) {
-        url = [input substringFromIndex:4];
+        url = [input substringFromIndex:8];
     } else {
         [self showError:@"Invalid URL format. Must start with 'mpvplay://' or 'mpvplay://weblink?url='."];
         return;
@@ -110,8 +145,11 @@
 
     // Launch MPV
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-    NSURL *app = [NSURL fileURLWithPath:@"/Applications/MPV.app"];
-    NSArray *arguments = [NSArray arrayWithObjects: @"--open", url, nil];
+    // NSURL *app = [NSURL fileURLWithPath:@"/Applications/MPV.app"];
+    // NSArray *arguments = [NSArray arrayWithObjects: @"--open", url, nil];
+    NSString *mpvPath = [self getMPVPath];
+    NSURL *app = [NSURL fileURLWithPath:mpvPath];
+    NSArray *arguments = [NSArray arrayWithObjects: url, nil];
     NSMutableDictionary *config = [[NSMutableDictionary alloc] init];
     [config setObject:arguments forKey:NSWorkspaceLaunchConfigurationArguments];
     

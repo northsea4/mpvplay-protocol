@@ -28,7 +28,7 @@ fi
 
 # Launch MPV
 echo "Launching MPV..."
-mpvplay "$url" >/dev/null 2>&1 &
+mpv "$url" >/dev/null 2>&1 &
 
 # Small delay to ensure MPV starts properly
 # sleep 0.2
