@@ -147,8 +147,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     wchar_t* final_url = NULL;
 
     // Remove mpvplay:// prefix
-    if (wcsncmp(url, L"mpvplay://", 6) == 0) {
-        wcscpy(url, url + 6);
+    if (wcsncmp(url, L"mpvplay://", 10) == 0) {
+        wcscpy(url, url + 10);
         log_message(L"Removed mpvplay:// prefix: %s", url);
     }
 
