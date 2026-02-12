@@ -207,8 +207,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     log_message(L"MPV path: %s", path);
 
     // 构建命令行参数
-    wchar_t* args = (wchar_t*)malloc(sizeof(wchar_t) * (wcslen(final_url) + 64));
-    wcscpy(args, L"--open \"");
+    wchar_t* args = (wchar_t*)malloc(sizeof(wchar_t) * (wcslen(final_url) + 3));
+    wcscpy(args, L"\"");
     wcscat(args, final_url);
     wcscat(args, L"\"");
 
